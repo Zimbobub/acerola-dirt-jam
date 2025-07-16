@@ -1,3 +1,5 @@
+use crate::generate::world::World;
+
 
 mod generate;
 mod render;
@@ -5,5 +7,6 @@ mod render;
 
 
 fn main() {
-    println!("Hello, world!");
+    let mut world: World = World::new();
+    world.generate_initial_region();
 }
