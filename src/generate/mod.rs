@@ -22,7 +22,7 @@ impl Pos {
 }
 
 
-
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Rect {
     pub x1: i64,
     pub y1: i64,
