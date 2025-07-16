@@ -19,6 +19,14 @@ impl Pos {
     pub fn new(x: i64, y: i64) -> Self {
         return Self { x: x, y: y };
     }
+
+
+    pub fn translate(&self, pos: Pos) -> Self {
+        return Pos::new(
+            self.x + pos.x,
+            self.y + pos.y,
+        );
+    }
 }
 
 

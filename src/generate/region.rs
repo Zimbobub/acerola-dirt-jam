@@ -42,6 +42,21 @@ impl Region {
     }
 
 
+    pub fn get_neighbor_coords(&self) -> [Pos; 8] {
+        return [
+            self.coords.translate(Pos::new(-1, -1)),
+            self.coords.translate(Pos::new(-1, 0)),
+            self.coords.translate(Pos::new(-1, 1)),
+
+            self.coords.translate(Pos::new(0, -1)),
+            self.coords.translate(Pos::new(0, 1)),
+
+            self.coords.translate(Pos::new(1, -1)),
+            self.coords.translate(Pos::new(1, 0)),
+            self.coords.translate(Pos::new(1, 1)),
+        ]
+    }
+
 
     pub fn get_bounds(&self) -> Rect {
         return Rect::new(

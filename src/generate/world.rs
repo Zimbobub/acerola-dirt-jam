@@ -40,8 +40,11 @@ impl World {
             return None;
         }
 
+        // lazy generate the region
         let mut region = Region::generate(coords)?;
         // then lazy generate neighbors
+
+
         // then fully generate this region
 
         self.regions.insert(coords, region);
