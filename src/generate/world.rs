@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use image::{GenericImage, Rgb, RgbImage};
 
-use crate::generate::{region::{Region, RegionState}, Pos, Rect};
+use crate::generate::{region::Region, Pos, Rect};
 
 
 
@@ -30,9 +30,13 @@ impl World {
     pub fn generate_region(&mut self, coords: Pos) -> Option<()> {
         println!("Generating region ({}, {})", coords.x, coords.y);
 
-        if self.regions.contains_key(&coords) {
-            println!("    Error: region already generated");
-            return None;
+        // check if already generated
+        match self.regions.get(&coords) {
+            None | Some(Region::LazyGenerated(_)) => {},
+            Some(Region::FullyGenerated(_)) => {
+                println!("    Error: region already generated");
+                return None;
+            }
         }
 
         if coords.x.trailing_zeros() < 6 || coords.y.trailing_zeros() < 6 {
@@ -41,16 +45,31 @@ impl World {
         }
 
         // lazy generate the region
-        let mut region = Region::generate(coords)?;
-        // then lazy generate neighbors
+        let region = Region::init(coords);
 
+        // then lazy generate neighbors
+        for neighbor_coords in region.get_neighbor_coords() {
+            self.lazy_generate_region(neighbor_coords);
+        }
 
         // then fully generate this region
+        self.regions.insert(coords, region.fully_generate()?);
 
-        self.regions.insert(coords, region);
 
         println!("    Success");
         return Some(());
+    }
+
+
+    fn lazy_generate_region(&mut self, coords: Pos) {
+        println!("Lazy generating region ({}, {})", coords.x, coords.y);
+
+        if self.regions.contains_key(&coords) {
+            println!("    Error: region already generated");
+            return;
+        }
+
+        self.regions.insert(coords, Region::init(coords));
     }
 }
 
@@ -81,14 +100,14 @@ impl World {
     pub fn export_centroids(&self) {
         // create images for each region then stitch them together
         let region_imgs: Vec<(Pos, image::ImageBuffer<Rgb<u8>, Vec<u8>>)> = self.regions.values().map(|region| {
-            println!("Creating region image for {}, {}", region.coords.x, region.coords.y);
+            println!("Creating region image for {}, {}", region.coords().x, region.coords().y);
 
             let mut region_img: image::ImageBuffer<Rgb<u8>, Vec<u8>> = RgbImage::new(64, 64);
 
             // fill background
-            let background: Rgb<u8> = match region.state {
-                RegionState::LazyGenerated => Rgb([50, 50, 50]),
-                RegionState::FullyGenerated => Rgb([100, 100, 100]),
+            let background: Rgb<u8> = match region {
+                Region::LazyGenerated(_) => Rgb([50, 50, 50]),
+                Region::FullyGenerated(_) => Rgb([100, 100, 100]),
             };
 
             for pixel in region_img.pixels_mut() {
@@ -97,11 +116,11 @@ impl World {
 
             // plot centroids
             // centroid coords are local coordinates (0..=63)
-            for centroid in region.centroids {
-                region_img.put_pixel((centroid.x - region.coords.x) as u32, (centroid.y - region.coords.y) as u32, Rgb([255, 0, 0]));
+            for centroid in region.centroids() {
+                region_img.put_pixel((centroid.x - region.coords().x) as u32, (centroid.y - region.coords().y) as u32, Rgb([255, 0, 0]));
             }
 
-            return (region.coords, region_img);
+            return (region.coords(), region_img);
         }).collect();
 
 
