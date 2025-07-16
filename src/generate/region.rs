@@ -1,15 +1,9 @@
-use crate::generate::Pos;
+
+use crate::generate::{Pos, Rect};
 
 
 
 
-
-
-
-pub struct RegionCoords {
-    pub x: i64,
-    pub y: i64,
-}
 
 
 
@@ -24,7 +18,24 @@ pub enum RegionState {
 /// The chunks in a region can extend out into its neighbors
 /// A region has 5 voronoi centroids
 pub struct Region {
-    coords: RegionCoords,
-    state: RegionState,
-    centroids: [Pos; 5]
+    /// coords is the top left of the region
+    /// therefore bottom right is coords.x*64 + 64 ...
+    /// coords must always be a multiple of 64
+    pub coords: Pos,
+    pub state: RegionState,
+    pub centroids: [Pos; 5]
+}
+
+
+impl Region {
+    pub fn new() -> Self {
+        unimplemented!()
+    }
+
+    pub fn get_bounds(&self) -> Rect {
+        return Rect::new(
+            self.coords.x, self.coords.y,
+            self.coords.x+1, self.coords.y+1
+        );
+    }
 }
