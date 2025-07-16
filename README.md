@@ -1,6 +1,7 @@
 # acerola-dirt-jam entry
 
 Uses https://www.redblobgames.com/x/1723-procedural-river-growing/ as a base
+This is derived from https://web.archive.org/web/20180624211948/https://arches.liris.cnrs.fr/publications/articles/SIGGRAPH2013_PCG_Terrain.pdf
 
 Generates a chunkable voronoi diagram
 Each edge of each polygon can be a ridge or a valley water flows perpendicularly through
