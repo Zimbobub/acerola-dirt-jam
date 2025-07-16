@@ -8,7 +8,7 @@ pub mod region;
 pub mod world;
 
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 pub struct Pos {
     pub x: i64,
     pub y: i64,
@@ -61,5 +61,16 @@ impl Rect {
 
     pub fn bottom_right(&self) -> Pos {
         return Pos::new(i64::max(self.x1, self.x2), i64::max(self.y1, self.y2))
+    }
+
+    // modifying the rect
+
+    pub fn translate(&self, pos: Pos) -> Self {
+        return Rect::new(
+            self.x1 + pos.x,
+            self.y1 + pos.y,
+            self.x2 + pos.x,
+            self.y2 + pos.y,
+        );
     }
 }

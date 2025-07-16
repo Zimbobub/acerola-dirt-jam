@@ -28,9 +28,14 @@ pub struct Region {
 
 
 impl Region {
-    pub fn new() -> Self {
-        unimplemented!()
+    pub fn generate(coords: Pos) -> Self {
+        let centroids: [Pos; 5] = core::array::from_fn(|_| {
+            return Pos::new(rand::random_range(coords.x..coords.x+64), rand::random_range(coords.y..coords.y+64));
+        });
+        return Self { coords: coords, state: RegionState::LazyGenerated, centroids: centroids }
     }
+
+
 
     pub fn get_bounds(&self) -> Rect {
         return Rect::new(
