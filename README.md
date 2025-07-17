@@ -4,7 +4,7 @@
 
 ## Method
  - Radius of 8 regions around player
- - Regions contain a predetermined range of chunks (5-10, might change later)
+ - Regions contain a predetermined range of chunks (64-128, might change later)
  - When a region is generated, it has n chunk centres created and added to the world delaunay triangulation
  - A compute shader converts this to voronoi polygons
  - Each polygon's base height determined by perlin noise sampled at its centroid, determining overall map details
