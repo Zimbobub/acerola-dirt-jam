@@ -4,7 +4,9 @@ use crate::terrain::{Pos, RegionPos, REGION_CHUNKS, REGION_SIZE};
 
 
 
-
+/// Base data used to generate the world
+/// If there were save files, this is all that would need to be stored
+/// `WorldGen` handles triangulation and actual mesh generation
 pub struct WorldSave {
     pub centroids: Vec<Pos>,
 }
