@@ -1,4 +1,4 @@
-use crate::terrain::{region::RegionPos, world_save::WorldSave};
+use crate::terrain::{region::RegionPos, world_gen::WorldGen, world_save::WorldSave, Pos};
 
 
 
@@ -9,6 +9,12 @@ mod terrain;
 
 
 fn main() {
-    let mut world = WorldSave::new();
-    world.generate_region(RegionPos::default());
+    let mut world_save = WorldSave::new();
+    world_save.generate_region(RegionPos::default());
+
+    dbg!(&world_save.regions);
+
+    let mut world_gen = WorldGen::init(world_save, Pos::new(1.0, 1.0), 20.0);
+
+    dbg!(&world_gen.centroids);
 }
