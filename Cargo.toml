@@ -1,0 +1,9 @@
+[package]
+name = "acerola-dirt-jam"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+d3_geo_rs = "3.1.2"
+d3_geo_voronoi_rs = "0.10.6"
+vulkano = "0.35.1"
