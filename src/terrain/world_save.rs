@@ -1,5 +1,7 @@
 
-use crate::terrain::{Pos, RegionPos, REGION_CHUNKS, REGION_SIZE};
+use std::collections::HashMap;
+
+use crate::terrain::{region::{RegionPos, REGION_CHUNKS, REGION_SIZE}, Pos};
 
 
 
@@ -8,27 +10,30 @@ use crate::terrain::{Pos, RegionPos, REGION_CHUNKS, REGION_SIZE};
 /// If there were save files, this is all that would need to be stored
 /// `WorldGen` handles triangulation and actual mesh generation
 pub struct WorldSave {
-    pub centroids: Vec<Pos>,
+    pub regions: HashMap<RegionPos, Vec<Pos>>
 }
 
 
 impl WorldSave {
     pub fn new() -> Self {
         return Self {
-            centroids: Vec::new(),
+            regions: HashMap::new(),
         };
     }
 
 
     pub fn generate_region(&mut self, region_pos: RegionPos) {
+        // skip if already generated
+        if self.regions.contains_key(&region_pos) { return; }
+        
         let real_pos: Pos = region_pos.into();
-        for _ in 0..rand::random_range(REGION_CHUNKS) {
-            let pos = Pos::new(
+        let centroids: Vec<Pos> = (0..rand::random_range(REGION_CHUNKS)).map(|_| {
+            return Pos::new(
                 rand::random_range(real_pos.x..real_pos.x+REGION_SIZE),
                 rand::random_range(real_pos.y..real_pos.y+REGION_SIZE),
             );
+        }).collect();
 
-            self.centroids.push(pos);
-        }
+        self.regions.insert(region_pos, centroids);
     }
 }

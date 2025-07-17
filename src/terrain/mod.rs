@@ -1,29 +1,13 @@
-use core::ops::Range;
+
+use crate::terrain::region::{RegionPos, REGION_SIZE};
 
 
 
 
 pub mod world_save;
 pub mod world_gen;
+pub mod region;
 pub mod chunk;
-
-
-pub const REGION_SIZE: f64 = 64.0;
-pub const REGION_CHUNKS: Range<usize> = 64..128;
-
-
-
-#[derive(Debug, Clone, Copy, PartialEq, Default)]
-pub struct RegionPos {
-    pub x: i32,
-    pub y: i32
-}
-
-impl RegionPos {
-    pub fn new(x: i32, y: i32) -> Self {
-        return Self { x: x, y: y };
-    }
-}
 
 
 
