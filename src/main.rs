@@ -1,3 +1,13 @@
+use crate::terrain::world::World;
+
+
+
+
+
+mod gpu;
+mod terrain;
+
+
 fn main() {
-    println!("Hello, world!");
+    let mut world = World::new();
 }
