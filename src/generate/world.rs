@@ -12,6 +12,7 @@ use crate::generate::{region::Region, Pos, Rect};
 
 /// Used to store all terrain data
 /// Stores centroids of half generated regions
+#[derive(Debug)]
 pub struct World {
     regions: HashMap<Pos, Region>
 }

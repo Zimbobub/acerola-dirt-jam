@@ -22,6 +22,7 @@ pub struct FullRegion {
     /// coords must always be a multiple of 64
     pub coords: Pos,
     pub centroids: [Pos; 5],
+    pub triangulation: DelaunayTriangulation<Point2<f64>>,
     pub chunks: Vec<Chunk>
 }
 
@@ -59,19 +60,33 @@ impl Region {
             Self::LazyGenerated(region) => {
                 let mut triangulation: DelaunayTriangulation<_> = DelaunayTriangulation::new();
 
+                // triangulate this region's centroids
                 for centroid in region.centroids.iter() {
                     triangulation.insert(Point2::new(centroid.x as f64, centroid.y as f64)).ok()?;
                 }
 
+                // triangulate neighbor centroids
+                for neighbor in neighbors {
+                    for centroid in neighbor.centroids().iter() {
+                        triangulation.insert(Point2::new(centroid.x as f64, centroid.y as f64)).ok()?;
+                    }
+                }
+
                 log_voronoi_diagram(&triangulation);
 
-                let chunks: Vec<Chunk> = triangulation.undirected_voronoi_edges().map(|polygon| {
-                    return Chunk {  };
+                let chunks: Vec<Chunk> = triangulation.voronoi_faces().map(|polygon| {
+                    polygon.adjacent_edges().map(|edge| {
+
+                    });
+                    return Chunk {
+                        id: (region.coords, polygon.index())
+                    };
                 }).collect();
 
                 return Some(Self::FullyGenerated(FullRegion {
                     coords: region.coords,
                     centroids: region.centroids,
+                    triangulation: triangulation,
                     chunks: chunks
                 }));
             }
