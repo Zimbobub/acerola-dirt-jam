@@ -48,12 +48,14 @@ impl World {
         let region = Region::init(coords);
 
         // then lazy generate neighbors
-        for neighbor_coords in region.get_neighbor_coords() {
+        let neighbors_coords = region.get_neighbor_coords();
+        for neighbor_coords in neighbors_coords {
             self.lazy_generate_region(neighbor_coords);
         }
+        let neighbors: [&Region; 8] = neighbors_coords.map(|pos| self.regions.get(&pos).unwrap());
 
         // then fully generate this region
-        self.regions.insert(coords, region.fully_generate()?);
+        self.regions.insert(coords, region.fully_generate(neighbors)?);
 
 
         println!("    Success");

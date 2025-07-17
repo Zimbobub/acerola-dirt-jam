@@ -1,5 +1,7 @@
 
-use crate::generate::{Pos, Rect};
+use spade::{handles::VoronoiVertex, DelaunayTriangulation, Point2, Triangulation};
+
+use crate::generate::{chunk::Chunk, Pos, Rect};
 
 
 /// Lazy means only centroids have been generated
@@ -19,7 +21,8 @@ pub struct FullRegion {
     /// therefore bottom right is coords.x*64 + 64 ...
     /// coords must always be a multiple of 64
     pub coords: Pos,
-    pub centroids: [Pos; 5]
+    pub centroids: [Pos; 5],
+    pub chunks: Vec<Chunk>
 }
 
 
@@ -50,13 +53,26 @@ impl Region {
     }
 
     /// TODO: generate chunks in this
-    pub fn fully_generate(&self) -> Option<Self> {
+    pub fn fully_generate(&self, neighbors: [&Region; 8]) -> Option<Self> {
         match self {
             Self::FullyGenerated(_) => return None,
             Self::LazyGenerated(region) => {
+                let mut triangulation: DelaunayTriangulation<_> = DelaunayTriangulation::new();
+
+                for centroid in region.centroids.iter() {
+                    triangulation.insert(Point2::new(centroid.x as f64, centroid.y as f64)).ok()?;
+                }
+
+                log_voronoi_diagram(&triangulation);
+
+                let chunks: Vec<Chunk> = triangulation.undirected_voronoi_edges().map(|polygon| {
+                    return Chunk {  };
+                }).collect();
+
                 return Some(Self::FullyGenerated(FullRegion {
                     coords: region.coords,
-                    centroids: region.centroids
+                    centroids: region.centroids,
+                    chunks: chunks
                 }));
             }
         };
@@ -98,5 +114,36 @@ impl Region {
             self.coords().x, self.coords().y,
             self.coords().x+64, self.coords().y+64
         );
+    }
+}
+
+
+
+
+// Prints out the location of all voronoi edges in a triangulation
+fn log_voronoi_diagram(triangulation: &DelaunayTriangulation<Point2<f64>>) {
+    for edge in triangulation.undirected_voronoi_edges() {
+        match edge.vertices() {
+            [VoronoiVertex::Inner(from), VoronoiVertex::Inner(to)] => {
+                // "from" and "to" are inner faces of the Delaunay triangulation
+                println!(
+                    "Found voronoi edge between {:?} and {:?}",
+                    from.circumcenter(),
+                    to.circumcenter()
+                );
+            }
+            [VoronoiVertex::Inner(from), VoronoiVertex::Outer(edge)] | [VoronoiVertex::Outer(edge), VoronoiVertex::Inner(from)] => {
+                // Some lines don't have a finite end and extend into infinity.
+                println!(
+                    "Found infinite voronoi edge going out of {:?} into the direction {:?}",
+                    from.circumcenter(),
+                    edge.direction_vector()
+                );
+            }
+            [VoronoiVertex::Outer(_), VoronoiVertex::Outer(_)] => {
+                // This case only happens if all vertices of the triangulation lie on the
+                // same line and can probably be ignored.
+            }
+        }
     }
 }
