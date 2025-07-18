@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use spade::{FloatTriangulation, Point2};
+use spade::{FloatTriangulation, Point2, Triangulation};
 
 use crate::terrain::{chunk::{Chunk, ChunkId}, world::World, Pos};
 
@@ -30,44 +30,45 @@ impl SampledWorld {
 
 
         let mut chunks: HashMap<ChunkId, Chunk> = HashMap::new();
-        
-        for edge in world_save.triangulation.get_edges_in_circle(Point2::new(player_pos.x, player_pos.y), radius) {
-            match edge.as_directed().face().as_inner() {
-                Some(face) => {
-                    let mut is_border = false;
 
-                    let neighbors: [Option<ChunkId>; 3] = face.adjacent_edges().map(|e| {
-                        match e.rev().face().as_inner() {
-                            // outer face of the triangluation, ignore
-                            None => {
-                                is_border = true;
-                                return None;
-                            }
-                            Some(neighbor_face) => {
-                                // check if neighbor face is outside the circle at all
-                                // if any vertex not in circle
-                                if neighbor_face.positions().iter().any(|vertex| 
-                                    !point_in_circle(vertex.clone().into(), player_pos, radius)
-                                ) {
-                                    is_border = true;
-                                    return None;
-                                }
-                                return Some(neighbor_face.index());
-                            }
-                        }
-                    });
+        for edge in world_save.triangulation.get_edges_in_circle(player_pos.into(), radius) {
+            let face = edge.as_directed().face();
+            if face.is_outer() { continue; }
 
-                    let points = face.positions();
+            let face = face.as_inner().unwrap();
+            let mut is_border = false;
 
-                    chunks.insert(face.index(), Chunk::new(
-                        face.index(),
-                        [points[0].into(), points[1].into(), points[2].into()],
-                        neighbors,
-                        is_border
-                    ));
-                },
-                None => continue
-            };
+            let neighbors: [Option<ChunkId>; 3] = face.adjacent_edges().map(|e| {
+                let neighbor_face = edge.as_directed().face();
+                // outer face of the triangluation, ignore
+                if neighbor_face.is_outer() {
+                    is_border = true;
+                    return None;
+                }
+
+                let neighbor_face = neighbor_face.as_inner().unwrap();
+
+
+
+                // check if neighbor face is outside the circle at all
+                // if any vertex not in circle
+                if neighbor_face.positions().iter().any(|vertex| 
+                    !point_in_circle(vertex.clone().into(), player_pos, radius)
+                ) {
+                    is_border = true;
+                    return None;
+                }
+                return Some(neighbor_face.index());
+            });
+
+            let points = face.positions();
+
+            chunks.insert(face.index(), Chunk::new(
+                face.index(),
+                [points[0].into(), points[1].into(), points[2].into()],
+                neighbors,
+                is_border
+            ));
         }
 
         return Self {

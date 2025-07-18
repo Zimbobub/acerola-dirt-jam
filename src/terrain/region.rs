@@ -6,7 +6,7 @@ use core::ops::Range;
 
 
 pub const REGION_SIZE: f64 = 64.0;
-pub const REGION_CHUNKS: Range<usize> = 4..8;
+pub const REGION_CHUNKS: Range<usize> = 32..64;
 
 
 

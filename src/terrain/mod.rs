@@ -1,5 +1,5 @@
 
-use spade::{HasPosition, Point2, SpadeNum};
+use spade::{HasPosition, Point2};
 use vulkano::buffer::BufferContents;
 
 use crate::terrain::region::{RegionPos, REGION_SIZE};
@@ -34,6 +34,13 @@ impl<T: Into<f64>> From<Point2<T>> for Pos {
         return Pos::new(pos.x.into(), pos.y.into());
     }
 }
+
+impl<T: From<f64>> Into<Point2<T>> for Pos {
+    fn into(self) -> Point2<T> {
+        return Point2::new(self.x.into(), self.y.into());
+    }
+}
+
 
 
 impl HasPosition for Pos {

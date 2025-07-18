@@ -1,7 +1,7 @@
 
 use std::collections::HashMap;
 
-use spade::{handles::FixedVertexHandle, DelaunayTriangulation, Point2, Triangulation};
+use spade::{handles::FixedVertexHandle, DelaunayTriangulation, Triangulation};
 
 use crate::terrain::{region::{RegionPos, REGION_CHUNKS, REGION_SIZE}, Pos};
 

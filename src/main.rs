@@ -1,6 +1,9 @@
-use vulkano::{buffer::{Buffer, BufferCreateInfo, BufferUsage}, memory::allocator::{AllocationCreateInfo, MemoryTypeFilter}};
 
-use crate::{gpu::GPU, terrain::{region::RegionPos, sampled_world::SampledWorld, world::World, Pos}};
+
+
+use spade::Triangulation;
+
+use crate::{terrain::{region::RegionPos, sampled_world::SampledWorld, world::World, Pos}};
 
 
 
@@ -12,11 +15,11 @@ mod terrain;
 
 fn main() {
     let mut world = World::new();
-    world.generate_region(RegionPos::default());
+    world.generate_region(RegionPos::new(0, 0));
+    println!("{} total chunks from {} verticies", world.triangulation.num_inner_faces(), world.regions.values().map(|v| v.len()).sum::<usize>());
 
-    // dbg!(&world);
-    let world_sample = SampledWorld::init(world, Pos::new(0.0, 0.0), 200.0);
-    dbg!(&world_sample);
+    let world_sample = SampledWorld::init(world, Pos::new(0.0, 0.0), 1024.0);
+    println!("{} chunks in render distance", world_sample.chunks.len());
 
     // let gpu = GPU::init();
 
