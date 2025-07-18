@@ -6,8 +6,8 @@ use crate::terrain::region::{RegionPos, REGION_SIZE};
 
 
 
-pub mod world_save;
-pub mod world_gen;
+pub mod world;
+pub mod sampled_world;
 pub mod region;
 pub mod chunk;
 

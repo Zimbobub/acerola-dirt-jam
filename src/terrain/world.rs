@@ -12,13 +12,13 @@ use crate::terrain::{region::{RegionPos, REGION_CHUNKS, REGION_SIZE}, Pos};
 /// If there were save files, this is all that would need to be stored
 /// `WorldGen` handles triangulation and actual mesh generation
 #[derive(Debug)]
-pub struct WorldSave {
+pub struct World {
     pub regions: HashMap<RegionPos, Vec<Pos>>,
     pub triangulation: DelaunayTriangulation<Point2<f64>>,
 }
 
 
-impl WorldSave {
+impl World {
     pub fn new() -> Self {
         return Self {
             regions: HashMap::new(),

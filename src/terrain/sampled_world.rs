@@ -1,21 +1,21 @@
 use spade::{DelaunayTriangulation, Point2, Triangulation};
 
-use crate::terrain::{chunk::Chunk, world_save::WorldSave, Pos};
+use crate::terrain::{chunk::Chunk, world::World, Pos};
 
 
 
 
 
 /// Creates the mesh from a `WorldSave`
-pub struct WorldGen<'world> {
+pub struct SampledWorld<'world> {
     pub centroids: Vec<Pos>,
     pub triangulation: DelaunayTriangulation<Point2<f64>>,
     pub chunks: Vec<Chunk<'world>>,
 }
 
 
-impl WorldGen<'_> {
-    pub fn init(world_save: WorldSave, player_pos: Pos, radius: f64) -> Self {
+impl SampledWorld<'_> {
+    pub fn init(world_save: World, player_pos: Pos, radius: f64) -> Self {
         let mut centroids: Vec<Pos> = Vec::new();
 
         for region in world_save.regions.values() {
