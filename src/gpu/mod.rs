@@ -5,12 +5,13 @@ pub mod shaders;
 
 use std::sync::Arc;
 
+use vulkano::buffer::{Buffer, BufferContents, BufferCreateInfo, BufferUsage, Subbuffer};
 use vulkano::command_buffer::allocator::{StandardCommandBufferAllocator, StandardCommandBufferAllocatorCreateInfo};
 use vulkano::command_buffer::PrimaryAutoCommandBuffer;
 use vulkano::descriptor_set::allocator::StandardDescriptorSetAllocator;
 use vulkano::device::physical::PhysicalDevice;
 use vulkano::device::{Device, DeviceCreateInfo, Queue, QueueCreateInfo, QueueFlags};
-use vulkano::memory::allocator::StandardMemoryAllocator;
+use vulkano::memory::allocator::{AllocationCreateInfo, MemoryTypeFilter, StandardMemoryAllocator};
 use vulkano::VulkanLibrary;
 use vulkano::instance::{Instance, InstanceCreateFlags, InstanceCreateInfo};
 use vulkano::sync::GpuFuture;
@@ -29,7 +30,7 @@ pub struct GPU {
 
 
 impl GPU {
-    pub fn new() -> Self {
+    pub fn init() -> Self {
         // get vulkan instance
         let library = VulkanLibrary::new().expect("no local Vulkan library/DLL");
         let instance = Instance::new(
@@ -110,6 +111,16 @@ impl GPU {
             command_buffer_allocator: command_buffer_allocator,
             descriptor_set_allocator: descriptor_set_allocator
         };
+    }
+
+
+    pub fn buffer_from_iter<I, T>(&self, data: I, usage: BufferUsage, memory_type_filter: MemoryTypeFilter) -> Subbuffer<[T]> where T: BufferContents, I: IntoIterator<Item = T>, I::IntoIter: ExactSizeIterator {
+        return Buffer::from_iter(
+            self.memory_allocator.clone(),
+            BufferCreateInfo { usage: usage, ..Default::default() },
+            AllocationCreateInfo { memory_type_filter: memory_type_filter, ..Default::default() },
+            data
+        ).expect("failed to create buffer");
     }
 
 

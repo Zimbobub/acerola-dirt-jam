@@ -1,4 +1,6 @@
 
+use vulkano::buffer::BufferContents;
+
 use crate::terrain::region::{RegionPos, REGION_SIZE};
 
 
@@ -12,7 +14,8 @@ pub mod chunk;
 
 
 
-#[derive(Debug, Clone, Copy, PartialEq, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Default, BufferContents)]
+#[repr(C)]
 pub struct Pos {
     pub x: f64,
     pub y: f64
