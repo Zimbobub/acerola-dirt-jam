@@ -14,7 +14,7 @@ use crate::terrain::{region::{RegionPos, REGION_CHUNKS, REGION_SIZE}, Pos};
 #[derive(Debug)]
 pub struct World {
     pub regions: HashMap<RegionPos, Vec<Pos>>,
-    pub triangulation: DelaunayTriangulation<Point2<f64>>,
+    pub triangulation: DelaunayTriangulation<Pos>,
 }
 
 
@@ -46,12 +46,12 @@ impl World {
                 // tell `spade` to first try previous point, as it is nearby
                 Some(prev_vertex) => {
                     prev = self.triangulation.insert_with_hint(
-                        Point2::new(centroid.x, centroid.y),
+                        *centroid,
                         prev_vertex
                     ).ok();
                 },
                 None => {
-                    prev = self.triangulation.insert(Point2::new(centroid.x, centroid.y)).ok();
+                    prev = self.triangulation.insert(*centroid).ok();
                 }
             };
         }

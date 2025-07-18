@@ -14,9 +14,9 @@ fn main() {
     let mut world = World::new();
     world.generate_region(RegionPos::default());
 
-    dbg!(&world);
-    let mut world_sample = SampledWorld::init(world, Pos::new(1.0, 1.0), 20.0);
-    // dbg!(&world_gen.centroids);
+    // dbg!(&world);
+    let world_sample = SampledWorld::init(world, Pos::new(0.0, 0.0), 200.0);
+    dbg!(&world_sample);
 
     // let gpu = GPU::init();
 
