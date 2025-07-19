@@ -61,4 +61,8 @@ impl Pos {
     pub fn scaled(&self, scale: f64) -> Pos {
         return Pos::new(self.x * scale, self.y * scale);
     }
+
+    pub fn transformed(&self, x: f64,  y: f64) -> Pos {
+        return Pos::new(self.x + x, self.y + y);
+    }
 }

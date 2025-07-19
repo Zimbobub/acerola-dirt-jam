@@ -39,28 +39,28 @@ pub mod fragment_shader {
 
             void main() {
                 // Get the fragment's position in normalized device coordinates
-                vec2 fragCoord = gl_FragCoord.xy / vec2(800.0, 600.0); // Adjust based on your viewport size
+                vec2 fragCoord = gl_FragCoord.xy / vec2(1024.0, 1024.0); // Adjust based on your viewport size
 
-                // // Define the triangle vertices (in normalized device coordinates)
-                // vec2 v0 = vec2(0.0, 0.5);
-                // vec2 v1 = vec2(-0.5, -0.5);
-                // vec2 v2 = vec2(0.5, -0.5);
+                // Define the triangle vertices (in normalized device coordinates)
+                vec2 v0 = vec2(0.0, 0.5);
+                vec2 v1 = vec2(-0.5, -0.5);
+                vec2 v2 = vec2(0.5, -0.5);
 
-                // // Calculate distances to each edge of the triangle
-                // float d0 = distanceToLineSegment(fragCoord, v0, v1);
-                // float d1 = distanceToLineSegment(fragCoord, v1, v2);
-                // float d2 = distanceToLineSegment(fragCoord, v2, v0);
+                // Calculate distances to each edge of the triangle
+                float d0 = distanceToLineSegment(fragCoord, v0, v1);
+                float d1 = distanceToLineSegment(fragCoord, v1, v2);
+                float d2 = distanceToLineSegment(fragCoord, v2, v0);
 
-                // // Set border width
-                // float borderWidth = 0.01; // Adjust as needed
+                // Set border width
+                float borderWidth = 0.1; // Adjust as needed
 
-                // // Determine if the fragment is within the border
-                // if (d0 < borderWidth || d1 < borderWidth || d2 < borderWidth) {
-                //     f_color = vec4(0.0, 0.0, 0.0, 1.0); // Border color (black)
-                // } else {
-                //     f_color = vec4(1.0, 0.0, 0.0, 1.0); // Triangle color (red)
-                // }
-                f_color = vec4(fragCoord, 0.0, 1.0);
+                // Determine if the fragment is within the border
+                if (d0 < borderWidth || d1 < borderWidth || d2 < borderWidth) {
+                    f_color = vec4(0.0, 0.0, 0.0, 1.0); // Border color (black)
+                } else {
+                    f_color = vec4(1.0, 0.0, 0.0, 1.0); // Triangle color (red)
+                }
+                // f_color = vec4(fragCoord, 0.0, 1.0);
             }
         ",
     }

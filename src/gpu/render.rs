@@ -20,9 +20,9 @@ impl ChunkVertex {
 
     pub fn from_pos_triangle(tri: [Pos; 3], viewport_size: f64) -> [Self; 3] {
         return [
-            tri[0].scaled(1.0/viewport_size).into(),
-            tri[1].scaled(1.0/viewport_size).into(),
-            tri[2].scaled(1.0/viewport_size).into(),
+            tri[0].scaled(1.0/viewport_size).transformed(-0.5, -0.5).into(),
+            tri[1].scaled(1.0/viewport_size).transformed(-0.5, -0.5).into(),
+            tri[2].scaled(1.0/viewport_size).transformed(-0.5, -0.5).into(),
         ];
     }
 }
