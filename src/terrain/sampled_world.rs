@@ -17,18 +17,6 @@ pub struct SampledWorld {
 
 impl SampledWorld {
     pub fn init(world_save: World, player_pos: Pos, radius: f64) -> Self {
-        // let mut centroids: Vec<Pos> = Vec::new();
-
-        // for region in world_save.regions.values() {
-        //     for pos in region {
-        //         let taxicab_distance = (pos.x - player_pos.x).abs() + (pos.y - player_pos.y).abs();
-        //         if taxicab_distance <= radius {
-        //             centroids.push(*pos);
-        //         };
-        //     }
-        // }
-
-
         let mut chunks: HashMap<ChunkId, Chunk> = HashMap::new();
 
         for edge in world_save.triangulation.get_edges_in_circle(player_pos.into(), radius) {

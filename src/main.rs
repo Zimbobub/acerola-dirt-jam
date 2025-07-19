@@ -3,7 +3,7 @@
 
 use spade::Triangulation;
 
-use crate::{terrain::{region::RegionPos, sampled_world::SampledWorld, world::World, Pos}};
+use crate::{gpu::GPU, terrain::{region::RegionPos, sampled_world::SampledWorld, world::World, Pos}};
 
 
 
@@ -21,20 +21,12 @@ fn main() {
     let world_sample = SampledWorld::init(world, Pos::new(0.0, 0.0), 1024.0);
     println!("{} chunks in render distance", world_sample.chunks.len());
 
-    // let gpu = GPU::init();
+    for chunk in world_sample.chunks.values() {
+        println!("Chunk ({}, {}) ({}, {}) ({}, {})", chunk.verticies[0].x, chunk.verticies[0].y, chunk.verticies[1].x, chunk.verticies[1].y, chunk.verticies[2].x, chunk.verticies[2].y);
+    }
 
+    let gpu = GPU::init();
 
+    gpu::render::render(&gpu, &world_sample);
 
-    // delaunay triangulation
-    // let centroids_buffer = gpu.buffer_from_iter(
-    //     world_gen.centroids.clone(),
-    //     BufferUsage::UNIFORM_BUFFER, 
-    //     MemoryTypeFilter::PREFER_DEVICE | MemoryTypeFilter::HOST_SEQUENTIAL_WRITE
-    // );
-
-    // let triangles_buffer = gpu.buffer_from_iter(
-    //     (0..world_gen.centroids.len()).map(|_| 0),
-    //     BufferUsage::UNIFORM_BUFFER, 
-    //     MemoryTypeFilter::PREFER_DEVICE | MemoryTypeFilter::HOST_SEQUENTIAL_WRITE
-    // );
 }

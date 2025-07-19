@@ -7,12 +7,12 @@ pub type ChunkId = usize;
 
 #[derive(Debug)]
 pub struct Chunk {
-    id: ChunkId,
-    verticies: [Pos; 3],
+    pub id: ChunkId,
+    pub verticies: [Pos; 3],
     /// Triangles can only have max of 3 neighbors
-    neighbors: [Option<ChunkId>; 3],
+    pub neighbors: [Option<ChunkId>; 3],
     /// True if this chunk is on the outer boundary of the rendered world
-    is_border: bool,
+    pub is_border: bool,
 }
 
 

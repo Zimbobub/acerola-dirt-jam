@@ -56,4 +56,9 @@ impl Pos {
     pub fn new(x: f64, y: f64) -> Self {
         return Self { x: x, y: y };
     }
+
+
+    pub fn scaled(&self, scale: f64) -> Pos {
+        return Pos::new(self.x * scale, self.y * scale);
+    }
 }

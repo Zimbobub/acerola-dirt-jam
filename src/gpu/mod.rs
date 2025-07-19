@@ -1,7 +1,7 @@
 
 
 pub mod shaders;
-
+pub mod render;
 
 use std::sync::Arc;
 
