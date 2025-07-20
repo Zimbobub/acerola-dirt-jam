@@ -2,6 +2,7 @@
 
 pub mod shaders;
 pub mod render;
+pub mod compute;
 
 use std::sync::Arc;
 
@@ -64,7 +65,7 @@ impl GPU {
             .iter()
             .enumerate()
             .position(|(_queue_family_index, queue_family_properties)| {
-                queue_family_properties.queue_flags.contains(QueueFlags::GRAPHICS)
+                queue_family_properties.queue_flags.contains(QueueFlags::GRAPHICS | QueueFlags::COMPUTE)
             })
             .expect("couldn't find a graphical queue family") as u32;
 
